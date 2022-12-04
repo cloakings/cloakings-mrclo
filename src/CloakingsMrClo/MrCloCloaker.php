@@ -26,7 +26,7 @@ class MrCloCloaker implements CloakerInterface
             $this->params,
             $this->token,
             $this->getIp($request),
-            $this->getData($request)
+            $this->getData($request),
         );
 
         return $this->createResult($apiResponse);
@@ -50,6 +50,8 @@ class MrCloCloaker implements CloakerInterface
             apiResponse: $apiResponse,
             params: [
                 'mode_button' => $apiResponse->modeButton,
+                'target' => $apiResponse->target,
+                'mode' => $apiResponse->mode,
             ]
         );
     }
@@ -67,9 +69,15 @@ class MrCloCloaker implements CloakerInterface
 
     private function getData(Request $request): array
     {
+        try {
+            $sessionData = $request->getSession()->all() ?: [];
+        } catch (\Throwable) {
+            $sessionData = [];
+        }
+
         return [
             'utm' => Json::toString(array_merge(
-                $request->getSession()->all() ?: [],
+                $sessionData,
                 $request->query->all(),
             )),
             'query' => Json::toString($request->getQueryString()),

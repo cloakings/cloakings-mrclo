@@ -20,17 +20,12 @@ class MrCloRenderer
         CloakerResult $cloakerResult,
         MrCloRenderParams $params,
         Request $request = null,
+        bool $serverCanOverrideTarget = false,
     ): Response
     {
         $response = new Response();
 
-        if ($cloakerResult->mode === CloakModeEnum::Fake) {
-            $mode = $params->fakeMode;
-            $target = $params->fakeTarget;
-        } else {
-            $mode = $params->realMode;
-            $target = $params->realTarget;
-        }
+        [$mode, $target] = $this->getModeAndTarget($cloakerResult, $params, $serverCanOverrideTarget);
 
         if ($mode === MrCloLandingModeEnum::Content) {
             $response->setContent($target);
@@ -67,6 +62,27 @@ class MrCloRenderer
         $response->headers->set('Access-Control-Allow-Origin', '*');
 
         return $response;
+    }
+
+    private function getModeAndTarget(CloakerResult $cloakerResult, MrCloRenderParams $params, bool $serverCanOverrideTarget): array
+    {
+        if ($cloakerResult->mode === CloakModeEnum::Fake) {
+            $mode = $params->fakeMode;
+            $target = $params->fakeTarget;
+        } else {
+            $mode = $params->realMode;
+            $target = $params->realTarget;
+        }
+        if ($serverCanOverrideTarget) {
+            if (($cloakerResult->params['target'] ?? '') !== '') {
+                $target = $cloakerResult->params['target'];
+            }
+            if (($cloakerResult->params['mode'] ?? '') !== '') {
+                $mode = MrCloLandingModeEnum::tryFrom($cloakerResult->params['mode']) ?? $mode;
+            }
+        }
+
+        return [$mode, $target];
     }
 
     private function include(string $filename): string

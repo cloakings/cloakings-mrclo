@@ -12,8 +12,6 @@ use Throwable;
 
 class MrCloHttpClient
 {
-    private ?MrCloApiResponse $lastApiResponse = null;
-
     private const SERVICE_NAME = 'mrclo';
 
     public function __construct(
@@ -23,12 +21,7 @@ class MrCloHttpClient
     ) {
     }
 
-    public function execute(
-        MrCloParams $params,
-        string $token,
-        string $ip,
-        array $data,
-    ): MrCloApiResponse
+    public function execute(MrCloParams $params, string $token, string $ip, array $data): MrCloApiResponse
     {
         try {
             $startTime = microtime(true);
