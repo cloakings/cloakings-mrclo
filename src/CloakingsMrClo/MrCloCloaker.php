@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MrCloCloaker implements CloakerInterface
 {
+    private string $host = '';
+
     public function __construct(
         private readonly string $token,
         private MrCloParams $params = new MrCloParams(),
@@ -22,6 +24,8 @@ class MrCloCloaker implements CloakerInterface
 
     public function handle(Request $request): CloakerResult
     {
+        $prevHost = $this->replaceHost($request);
+
         $apiResponse = $this->httpClient->execute(
             $this->params,
             $this->token,
@@ -29,7 +33,16 @@ class MrCloCloaker implements CloakerInterface
             $this->getData($request),
         );
 
+        $this->restoreHost($prevHost, $request);
+
         return $this->createResult($apiResponse);
+    }
+
+    public function setHost(string $host): self
+    {
+        $this->host = $host;
+
+        return $this;
     }
 
     public function setParams(MrCloParams $params): self
@@ -98,5 +111,25 @@ class MrCloCloaker implements CloakerInterface
         }
 
         return $result;
+    }
+
+    private function restoreHost(?string $prevHost, Request $request): void
+    {
+        if ($prevHost === null) {
+            $request->server->remove('http_host');
+        } elseif ($prevHost !== '') {
+            $request->server->set('http_host', $prevHost);
+        }
+    }
+
+    private function replaceHost(Request $request): ?string
+    {
+        $prevHost = '';
+        if ($this->host !== '') {
+            $prevHost = $request->server->get('http_host', null);
+            $request->server->set('http_host', $this->host);
+        }
+
+        return $prevHost;
     }
 }
