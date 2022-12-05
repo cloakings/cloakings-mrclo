@@ -32,7 +32,7 @@ class MrCloCloaker implements CloakerInterface
         $prevHost = $this->replaceHost($request);
 
         $result = [
-            'params' => $this->params,
+            'params' => $this->params->jsonSerialize(),
             'token' => $this->token,
             'ip' => $this->getIp($request),
             'data' => $this->getData($request),
