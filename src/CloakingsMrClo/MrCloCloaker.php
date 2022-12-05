@@ -24,16 +24,33 @@ class MrCloCloaker implements CloakerInterface
 
     public function handle(Request $request): CloakerResult
     {
+        return $this->handleParams($this->collectParams($request));
+    }
+
+    public function collectParams(Request $request): array
+    {
         $prevHost = $this->replaceHost($request);
 
-        $apiResponse = $this->httpClient->execute(
-            $this->params,
-            $this->token,
-            $this->getIp($request),
-            $this->getData($request),
-        );
+        $result = [
+            'params' => $this->params,
+            'token' => $this->token,
+            'ip' => $this->getIp($request),
+            'data' => $this->getData($request),
+        ];
 
         $this->restoreHost($prevHost, $request);
+
+        return $result;
+    }
+
+    public function handleParams(array $params): CloakerResult
+    {
+        $apiResponse = $this->httpClient->execute(
+            params: $params['params'] ?? [],
+            token: $params['token'] ?? [],
+            ip: $params['ip'] ?? '',
+            data: $params['data'] ?? '',
+        );
 
         return $this->createResult($apiResponse);
     }
