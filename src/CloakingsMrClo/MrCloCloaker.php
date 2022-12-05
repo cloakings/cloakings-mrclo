@@ -46,7 +46,7 @@ class MrCloCloaker implements CloakerInterface
     public function handleParams(array $params): CloakerResult
     {
         $apiResponse = $this->httpClient->execute(
-            params: $params['params'] ?? [],
+            params: MrCloParams::create($params['params'] ?? []),
             token: $params['token'] ?? [],
             ip: $params['ip'] ?? '',
             data: $params['data'] ?? '',
