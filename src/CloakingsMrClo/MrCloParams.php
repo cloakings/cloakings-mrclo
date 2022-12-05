@@ -24,7 +24,7 @@ class MrCloParams implements \JsonSerializable
             utmCheck: (bool)($a['utm_check'] ?? false),
             vpnCheck: (bool)($a['vpn_check'] ?? false),
             blockIos: (bool)($a['block_ios'] ?? false),
-            fakeCountries: $a['mode_button'] ?? [],
+            fakeCountries: $a['fake_countries'] ?? [],
         );
     }
 
