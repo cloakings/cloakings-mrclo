@@ -1,5 +1,5 @@
-Cloakings CloakIT
-=================
+Cloakings Mr.Clo
+================
 
 Detect if user is bot or real user using mr-clo.com
 
