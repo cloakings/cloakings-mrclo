@@ -3,6 +3,7 @@
 namespace Cloakings\CloakingsMrClo;
 
 use Cloakings\CloakingsCommon\CloakerApiResponseInterface;
+use Cloakings\CloakingsCommon\CloakerHelper;
 
 class MrCloApiResponse implements CloakerApiResponseInterface
 {
@@ -73,7 +74,7 @@ class MrCloApiResponse implements CloakerApiResponseInterface
             'mode' => $this->mode,
             'content' => $this->content,
             'response_status' => $this->responseStatus,
-            'response_headers' => $this->responseHeaders,
+            'response_headers' => CloakerHelper::flattenHeaders($this->responseHeaders),
             'response_body' => $this->responseBody,
             'response_time' => $this->responseTime,
         ];
