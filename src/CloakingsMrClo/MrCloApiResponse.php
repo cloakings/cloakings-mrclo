@@ -2,7 +2,9 @@
 
 namespace Cloakings\CloakingsMrClo;
 
-class MrCloApiResponse
+use Cloakings\CloakingsCommon\CloakerApiResponseInterface;
+
+class MrCloApiResponse implements CloakerApiResponseInterface
 {
     public function __construct(
         public readonly bool $isBot = false,
@@ -30,5 +32,50 @@ class MrCloApiResponse
             responseBody: ($a['response_body'] ?? ''),
             responseTime: ($a['response_time'] ?? 0.0),
         );
+    }
+
+    public function isReal(): bool
+    {
+        return !$this->isFake();
+    }
+
+    public function isFake(): bool
+    {
+        return $this->isBot;
+    }
+
+    public function getResponseStatus(): int
+    {
+        return $this->responseStatus;
+    }
+
+    public function getResponseHeaders(): array
+    {
+        return $this->responseHeaders;
+    }
+
+    public function getResponseBody(): string
+    {
+        return $this->responseBody;
+    }
+
+    public function getResponseTime(): float
+    {
+        return $this->responseTime;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'is_bot' => $this->isBot,
+            'mode_button' => $this->modeButton,
+            'target' => $this->target,
+            'mode' => $this->mode,
+            'content' => $this->content,
+            'response_status' => $this->responseStatus,
+            'response_headers' => $this->responseHeaders,
+            'response_body' => $this->responseBody,
+            'response_time' => $this->responseTime,
+        ];
     }
 }
