@@ -19,7 +19,7 @@ class MrCloRenderer
     public function render(
         CloakerResult $cloakerResult,
         MrCloRenderParams $params,
-        Request $request = null,
+        ?Request $request = null,
         bool $serverCanOverrideTarget = false,
     ): Response
     {

@@ -62,8 +62,8 @@ class MrCloHttpClient
             return MrCloApiResponse::create([]);
         }
 
-        $this->logger->info('cloaking_request', ['service' => self::SERVICE_NAME, 'params' => $params, 'status' => $status ?? 0, 'headers' => $headers ?? [], 'content' => $content ?? '', 'time' => $time ?? 0]);
+        $this->logger->info('cloaking_request', ['service' => self::SERVICE_NAME, 'params' => $params, 'status' => $status, 'headers' => $headers, 'content' => $content, 'time' => $time]);
 
-        return MrCloApiResponse::create($data ?? []);
+        return MrCloApiResponse::create($data);
     }
 }
